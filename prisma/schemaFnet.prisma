@@ -1,0 +1,897 @@
+generator client {
+  provider      = "prisma-client-js"
+  output        = "./generated/fnet-gv-client"
+  binaryTargets = ["native", "rhel-openssl-1.0.x"]
+}
+
+datasource db {
+  provider     = "mysql"
+  url          = env("FNET_GV_DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model accountingentrytb {
+  ID                   Int      @id @default(autoincrement()) @db.UnsignedInt
+  CreateDate           DateTime @default(dbgenerated("'0000-00-00'")) @db.Date
+  CreateTime           DateTime @default(dbgenerated("'00:00:00'")) @db.Time(0)
+  StaffID              Int      @default(0) @db.UnsignedInt
+  FromDate             DateTime @default(dbgenerated("'0000-00-00'")) @db.Date
+  FromTime             DateTime @default(dbgenerated("'00:00:00'")) @db.Time(0)
+  NumBalance           Int      @default(0)
+  ImportQuantity       Int      @default(0)
+  ImportTotalAmount    Decimal  @default(0) @db.Decimal(12, 0)
+  SaleQuantity         Int      @default(0)
+  SaleTotalAmount      Decimal  @default(0) @db.Decimal(12, 0)
+  NumInventoryExpected Int      @default(0)
+  NumInventoryReal     Int      @default(0)
+  NumAdjust            Int      @default(0)
+  Note                 String?  @db.VarChar(250)
+  ServiceID            Int      @default(0) @db.UnsignedInt
+}
+
+model anonymoustb {
+  ID         Int      @id @default(autoincrement())
+  Name       String?  @db.VarChar(255)
+  IDCard     String?  @db.VarChar(255)
+  Address    String?  @db.VarChar(255)
+  MachineID  Int?
+  Session    Int      @default(0) @db.TinyInt
+  RecordDate DateTime @db.DateTime(0)
+}
+
+model applicationrenttb {
+  ApplicationRentID Int    @id @default(autoincrement()) @db.UnsignedInt
+  Name              String @default("") @db.VarChar(100)
+  Hash              String @default("") @db.VarChar(100)
+  AddBy             Int    @default(0) @db.UnsignedTinyInt
+  Status            Int    @default(0) @db.UnsignedTinyInt
+}
+
+model applicationtb {
+  ApplicationId   Int     @id @default(autoincrement()) @db.SmallInt
+  ApplicationName String  @unique(map: "ApplicationName") @db.VarChar(255)
+  Description     String? @db.VarChar(100)
+  RestrictType    Int     @default(0) @db.TinyInt
+  Hash            String? @db.VarChar(50)
+  AppType         Int     @default(0) @db.TinyInt
+  AddedBy         Int     @default(0) @db.TinyInt
+}
+
+model blacklisttb {
+  URLId       Int      @id @default(autoincrement())
+  URL         String   @db.VarChar(512)
+  Title       String?  @db.VarChar(255)
+  Description String?  @db.VarChar(255)
+  RecordDate  DateTime @db.DateTime(0)
+  Active      Int      @default(1) @db.TinyInt
+  AddedBy     Int      @default(1) @db.TinyInt
+}
+
+model changepcdetailtb {
+  ChangePCDetailId Int      @id @default(autoincrement())
+  VoucherId        Int      @default(0) @db.UnsignedInt
+  FromMachineId    Int      @default(0) @db.UnsignedInt
+  ToMachineId      Int      @default(0) @db.UnsignedInt
+  TimeUsed         Int      @default(0) @db.UnsignedInt
+  MoneyUsed        Int      @default(0) @db.UnsignedInt
+  SessionId        Int      @default(0) @db.UnsignedInt
+  ChangePCDate     DateTime @default(dbgenerated("'0000-00-00'")) @db.Date
+  ChangePCTime     DateTime @default(dbgenerated("'00:00:00'")) @db.Time(0)
+  BeginDateTime    DateTime @default(dbgenerated("'0000-00-00 00:00:00'")) @db.DateTime(0)
+  LogNote          String   @default("") @db.VarChar(100)
+  MachineName      String   @default("") @db.VarChar(50)
+  LogType          Int      @default(0) @db.TinyInt
+
+  @@index([SessionId], map: "SessionId")
+}
+
+model clientatb {
+  ID         Int    @id @default(autoincrement())
+  PubID      Int    @default(0)
+  AID        Int    @default(0)
+  DateA      String @default("") @db.VarChar(45)
+  STime      Int    @default(0)
+  ETime      Int    @default(0)
+  FName      String @default("") @db.VarChar(45)
+  FLink      String @default("") @db.VarChar(45)
+  Area       String @default("") @db.VarChar(45)
+  Panel      Int    @default(0)
+  Row        Int    @default(0)
+  Col        Int    @default(0)
+  Method     String @default("") @db.VarChar(45)
+  CountS     Int    @default(0)
+  CountC     Int    @default(0)
+  RecordDate String @default("") @db.VarChar(45)
+}
+
+model clientsystb {
+  ID         Int      @id @default(autoincrement())
+  UserId     Int      @default(0)
+  MAC        String   @default("") @db.VarChar(50)
+  CPU        String   @default("") @db.VarChar(255)
+  RAM        String   @default("") @db.VarChar(20)
+  HD         String   @default("") @db.VarChar(255)
+  OS         String   @default("") @db.VarChar(255)
+  CardName   String   @default("") @db.VarChar(255)
+  ChipType   String   @default("") @db.VarChar(255)
+  VGAMem     String   @default("") @db.VarChar(20)
+  NIC        String   @default("") @db.VarChar(255)
+  FreeSpace  String   @default("") @db.VarChar(255)
+  CPName     String   @default("") @db.VarChar(50)
+  Active     Int      @default(1) @db.TinyInt
+  NTFS       String   @default("") @db.VarChar(50)
+  FAT        String   @default("") @db.VarChar(50)
+  Mainboard  String   @default("") @db.VarChar(255)
+  IP         String   @default("") @db.VarChar(45)
+  LAN        String   @default("") @db.VarChar(20)
+  RamFree    String   @default("") @db.VarChar(20)
+  PageFile   String   @default("") @db.VarChar(20)
+  TempCPU    String   @default("") @db.VarChar(20)
+  LoadCPU    String   @default("") @db.VarChar(20)
+  TempGPU    String   @default("") @db.VarChar(20)
+  LoadGPU    String   @default("") @db.VarChar(20)
+  LastUpdate DateTime @default(dbgenerated("'0000-00-00 00:00:00'")) @db.DateTime(0)
+  PCName     String?  @unique(map: "PCName") @db.VarChar(50)
+  NetInfo    String?  @db.Text
+}
+
+model combodetailtb {
+  ComboDetailID Int      @id @default(autoincrement()) @db.UnsignedInt
+  UserID        Int      @default(0) @db.UnsignedInt
+  ComboID       Int      @default(0) @db.UnsignedInt
+  VoucherID     Int      @default(0) @db.UnsignedInt
+  Accept        Int      @default(0) @db.UnsignedTinyInt
+  CreateDate    DateTime @default(dbgenerated("'0000-00-00'")) @db.Date
+  CreateTime    DateTime @default(dbgenerated("'00:00:00'")) @db.Time(0)
+  FromDate      DateTime @default(dbgenerated("'0000-00-00'")) @db.Date
+  FromTime      DateTime @default(dbgenerated("'00:00:00'")) @db.Time(0)
+  ToDate        DateTime @default(dbgenerated("'0000-00-00'")) @db.Date
+  ToTime        DateTime @default(dbgenerated("'00:00:00'")) @db.Time(0)
+  Zone          String?  @default("") @db.VarChar(255)
+  LoginTime     DateTime @default(dbgenerated("'0000-00-00 00:00:00'")) @db.Timestamp(0)
+  Ownerid       BigInt?  @default(0)
+}
+
+model combodonatetb {
+  ComboDonateID Int @id @default(autoincrement()) @db.UnsignedInt
+  ComboID       Int @default(0) @db.UnsignedInt
+  ServiceID     Int @default(0) @db.UnsignedInt
+  Quantity      Int @default(0) @db.UnsignedTinyInt
+}
+
+model combotb {
+  ComboID       Int      @id @default(autoincrement()) @db.UnsignedInt
+  Name          String   @default("") @db.VarChar(45)
+  Price         Decimal  @default(0) @db.Decimal(9, 0)
+  CreateDate    DateTime @default(dbgenerated("'0000-00-00'")) @db.Date
+  CreateTime    DateTime @default(dbgenerated("'00:00:00'")) @db.Time(0)
+  Type          Int      @default(0) @db.UnsignedTinyInt
+  PreAlias      String   @default("") @db.VarChar(45)
+  IsStatus      Int      @default(0) @db.UnsignedTinyInt
+  OrderPosition Int      @default(0) @db.UnsignedTinyInt
+  NumOfDay      Int      @default(1) @db.UnsignedTinyInt
+}
+
+model combousagetb {
+  ComboUsageID   Int @id @default(autoincrement()) @db.UnsignedInt
+  ComboID        Int @default(0) @db.UnsignedInt
+  MachineGroupID Int @default(0) @db.UnsignedInt
+  FromTime       Int @default(0) @db.UnsignedTinyInt
+  ToTime         Int @default(0) @db.UnsignedTinyInt
+}
+
+model convertunittb {
+  ID            Int @id @default(autoincrement()) @db.UnsignedInt
+  ServiceID     Int @default(0) @db.UnsignedInt
+  UnitRootID    Int @default(0) @db.UnsignedInt
+  ConvertUnitID Int @default(0) @db.UnsignedInt
+  Quantity      Int @default(0)
+}
+
+model dptb {
+  ComputerName    String   @id @db.VarChar(64)
+  Status          Int      @default(0) @db.TinyInt
+  Type            Int      @default(0) @db.TinyInt
+  Version         String   @default("") @db.VarChar(12)
+  LastUpdate      DateTime @default(dbgenerated("'0000-00-00'")) @db.Date
+  FNetVersion     String   @default("") @db.VarChar(12)
+  FNetReleaseDate DateTime @default(dbgenerated("'0000-00-00'")) @db.Date
+  DPB             String   @default("") @db.VarChar(50)
+}
+
+model freetimedetailtb {
+  FreeTimeDetailId Int      @id @default(autoincrement())
+  UserId           Int
+  FreeTime         Int      @default(1)
+  FreeMoney        Int      @default(0)
+  Type             Int      @default(1) @db.TinyInt
+  RecordDate       DateTime @db.Date
+  VoucherId        Int      @default(0)
+}
+
+model functiontb {
+  FunctionCode   String @id @db.VarChar(10)
+  FunctionName   String @default("") @db.VarChar(255)
+  ParentFunction String @default("") @db.VarChar(10)
+  LevelFunction  Int    @default(0) @db.UnsignedTinyInt
+  OrderOfLevel   Int    @default(0) @db.UnsignedInt
+  Active         Int    @default(0) @db.UnsignedTinyInt
+}
+
+model gamefoldertb {
+  ID        Int    @id @default(autoincrement())
+  MachineID Int    @default(0)
+  GameId    Int    @default(0)
+  GamePath  String @default("") @db.VarChar(256)
+}
+
+model gamelisttb {
+  GameId       Int      @id @default(autoincrement())
+  GameAlias    String   @default("") @db.VarChar(50)
+  GameName     String   @default("") @db.VarChar(50)
+  GameLauncher String   @default("") @db.VarChar(50)
+  Active       Int      @default(1) @db.TinyInt
+  Protocol     String   @default("") @db.VarChar(50)
+  URL          String   @default("") @db.VarChar(255)
+  Checksum     String   @default("") @db.VarChar(50)
+  PublishDate  DateTime @default(dbgenerated("'0000-00-00'")) @db.Date
+  TorrentFile  String   @default("") @db.VarChar(50)
+  SetupFile    String   @default("") @db.VarChar(50)
+  ShortcutPath String   @default("") @db.VarChar(255)
+  Type         Int      @default(0) @db.TinyInt
+  Size         String   @default("") @db.VarChar(50)
+  SetupType    Int      @default(1) @db.TinyInt
+  ConfigFile   String   @default("") @db.VarChar(50)
+  Checked      Int      @default(0) @db.TinyInt
+}
+
+model hptb {
+  ID             Int      @id @default(autoincrement())
+  MachineName    String   @default("") @db.VarChar(64)
+  IEHP           String   @default("") @db.VarChar(256)
+  FFHP           String   @default("") @db.VarChar(256)
+  GCHP           String   @default("") @db.VarChar(256)
+  LastUpdateDate DateTime @db.Date
+}
+
+model intoptiontb {
+  OptionId   Int     @id @db.SmallInt
+  OptionName String  @db.VarChar(50)
+  Value      String  @db.VarChar(255)
+  Active     Boolean
+}
+
+model inventorytb {
+  ID                Int      @id @default(autoincrement()) @db.UnsignedInt
+  CreateDate        DateTime @default(dbgenerated("'0000-00-00'")) @db.Date
+  CreateTime        DateTime @default(dbgenerated("'00:00:00'")) @db.Time(0)
+  StaffID           Int      @default(0) @db.UnsignedInt
+  Note              String?  @db.VarChar(250)
+  ServiceID         Int      @default(0) @db.UnsignedInt
+  ImportQuantity    Int      @default(0)
+  ImportPrice       Decimal  @default(0) @db.Decimal(9, 0)
+  ImportTotalAmount Decimal  @default(0) @db.Decimal(9, 0)
+}
+
+model legalapptb {
+  AppName String @unique(map: "AppName") @db.VarChar(50)
+}
+
+model machinegrouptb {
+  MachineGroupId   Int     @id @default(autoincrement())
+  MachineGroupName String  @db.VarChar(50)
+  PriceDefault     Int?    @default(0)
+  Active           Int?    @db.TinyInt
+  Description      String? @db.VarChar(100)
+}
+
+model paymenttb {
+  VoucherId     Int      @id @default(autoincrement())
+  UserId        Int
+  VoucherNo     String?  @db.VarChar(50)
+  VoucherDate   DateTime @default(dbgenerated("'0000-00-00'")) @db.Date
+  VoucherTime   DateTime @default(dbgenerated("'00:00:00'")) @db.Time(0)
+  ServeDate     DateTime @default(dbgenerated("'0000-00-00'")) @db.Date
+  ServeTime     DateTime @default(dbgenerated("'00:00:00'")) @db.Time(0)
+  Amount        Decimal  @db.Decimal(9, 0)
+  AutoAmount    Decimal  @default(0) @db.Decimal(9, 0)
+  TimeTotal     Int
+  Active        Boolean  @default(true)
+  UserNote      String   @default("") @db.VarChar(255)
+  Note          String   @db.VarChar(100)
+  ServicePaid   Boolean  @default(true)
+  StaffId       Int      @default(2)
+  MachineName   String?  @db.VarChar(100)
+  PaymentType   Int?     @default(0) @db.TinyInt
+  PaymentWaitId Int      @default(0)
+  zOid          String?  @unique(map: "zOidUnique") @db.VarChar(50)
+  zTid          String?  @unique(map: "zTidUnique") @db.VarChar(50)
+  zSig          String?  @db.VarChar(50)
+
+  @@index([ServicePaid], map: "ServicePaid")
+}
+
+model paymentwaittb {
+  PaymentWaitId     Int      @id @default(autoincrement())
+  MachineName       String   @default("") @db.VarChar(100)
+  TotalTimeUsed     Int      @default(0)
+  TotalTimeFee      Int      @default(0)
+  BeginTime         DateTime @default(dbgenerated("'0000-00-00 00:00:00'")) @db.DateTime(0)
+  EndTime           DateTime @default(dbgenerated("'0000-00-00 00:00:00'")) @db.DateTime(0)
+  TimeFee           Decimal  @default(0) @db.Decimal(9, 0)
+  TimeUsed          Int      @default(0)
+  RemainTime        Int      @default(0)
+  TimePaid          Int      @default(0)
+  FreeTime          Int      @default(0)
+  ChangePCSessionId Int      @default(0)
+  AnonymId          Int      @default(0)
+  PriceGroupId      Int      @default(0)
+  MachineGroupId    Int      @default(0)
+  Note              String   @default("") @db.VarChar(255)
+  PriceAppRentID    Int      @default(0) @db.UnsignedInt
+}
+
+model priceapprenttb {
+  PriceAppRentID Int     @id @default(autoincrement()) @db.UnsignedInt
+  PriceID        Int     @default(0) @db.UnsignedInt
+  MachineGroupID Int     @default(0) @db.UnsignedInt
+  Name           String  @default("") @db.VarChar(100)
+  Price          Decimal @default(0) @db.Decimal(6, 0)
+  Status         Int     @default(0) @db.UnsignedTinyInt
+}
+
+model priceapprentusetb {
+  PriceAppRentUseID Int @id @default(autoincrement()) @db.UnsignedInt
+  PriceAppRentID    Int @default(0) @db.UnsignedInt
+  ApplicationRentID Int @default(0) @db.UnsignedInt
+}
+
+model pricedetailtb {
+  PriceDetailId  Int       @id @default(autoincrement()) @db.SmallInt
+  PriceId        Int       @db.SmallInt
+  MachineGroupId Int?      @db.SmallInt
+  Price          Decimal?  @db.Decimal(6, 0)
+  Promotion      Int?
+  PromotionTerm  Int?
+  FreeMoney      Int?
+  FreeTime       Int?
+  BeginTime      Int?      @db.SmallInt
+  EndTime        Int?      @db.SmallInt
+  Term           Int?
+  PromotionOrder Int?
+  BeginDate      DateTime? @db.Date
+  EndDate        DateTime? @db.Date
+  DayOfWeekMask  Int       @default(0)
+  PromotionType  Int       @default(0)
+}
+
+model pricelisttb {
+  PriceId   Int     @id @default(autoincrement()) @db.SmallInt
+  PriceType String  @unique(map: "PriceType") @db.VarChar(30)
+  Price     Decimal @db.Decimal(6, 0)
+  Type      Int     @default(0) @db.SmallInt
+  Active    Int?    @db.TinyInt
+}
+
+model pricemachinetb {
+  PriceMachineId Int     @id @default(autoincrement()) @db.SmallInt
+  PriceId        Int     @db.SmallInt
+  MachineGroupId Int     @db.SmallInt
+  Price          Decimal @db.Decimal(6, 0)
+}
+
+model printertb {
+  ID          Int    @id @default(autoincrement()) @db.UnsignedInt
+  PrinterName String @default("") @db.VarChar(100)
+  Type        Int    @default(0) @db.UnsignedTinyInt
+  Active      Int    @default(0) @db.UnsignedTinyInt
+}
+
+model printservicetb {
+  ID        Int @id @default(autoincrement()) @db.UnsignedInt
+  PrinterID Int @default(0) @db.UnsignedInt
+  ServiceID Int @default(0) @db.UnsignedInt
+}
+
+model processtb {
+  ID              Int      @id @default(autoincrement())
+  MachineName     String   @default("") @db.VarChar(64)
+  ProcessName     String   @default("") @db.VarChar(64)
+  FileLocation    String   @default("") @db.VarChar(255)
+  FileDescription String   @default("") @db.VarChar(255)
+  Type            Int      @default(0) @db.TinyInt
+  PreviousDate    DateTime @default(dbgenerated("'0000-00-00'")) @db.Date
+  CurrentDate     DateTime @default(dbgenerated("'0000-00-00'")) @db.Date
+}
+
+model rechargecarddetailtb {
+  CardDetailId Int      @id @default(autoincrement()) @db.UnsignedInt
+  VoucherId    Int      @db.UnsignedInt
+  StaffId      Int      @db.UnsignedInt
+  CardValue    Decimal  @db.Decimal(9, 0)
+  CardDate     DateTime @db.Date
+  CardTime     DateTime @db.Time(0)
+  CardQuantity Int      @db.UnsignedInt
+  CardAmount   Decimal  @db.Decimal(9, 0)
+  UserId       Int?
+  Accept       Boolean?
+}
+
+model rechargecardtb {
+  CardId     Int       @id @default(autoincrement()) @db.UnsignedInt
+  cardcode   String?   @db.VarChar(255)
+  CardValue  Decimal   @db.Decimal(9, 0)
+  ExpiryDate DateTime  @db.Date
+  CreateDate DateTime  @db.Date
+  CreateTime DateTime  @db.Time(0)
+  ModifyDate DateTime? @db.Date
+  ModifyTime DateTime? @db.Time(0)
+  Status     Boolean?
+  UserId     Int?      @db.UnsignedInt
+  Note       String?   @db.VarChar(50)
+}
+
+model reportdaily {
+  ymd         Int
+  prefix      String    @db.VarChar(20)
+  mode        Int       @db.SmallInt
+  f1          Int?
+  f2          Int?
+  f3          Int?
+  f4          Int?
+  f5          Int?
+  f6          Int?
+  f7          Int?
+  f8          Int?
+  f9          Int?
+  f10         String?   @db.VarChar(60)
+  f11         String?   @db.VarChar(60)
+  f12         String?   @db.VarChar(60)
+  f13         String?   @db.VarChar(60)
+  f14         String?   @db.VarChar(60)
+  f15         Float?    @db.Float
+  f16         Float?    @db.Float
+  f17         Float?    @db.Float
+  f18         Float?    @db.Float
+  f19         Float?    @db.Float
+  f20         Float?    @db.Float
+  ext         String?   @db.Text
+  hash        String?   @db.VarChar(60)
+  create_date DateTime? @db.DateTime(0)
+  update_date DateTime? @db.DateTime(0)
+
+  @@id([ymd, prefix, mode])
+}
+
+model reportmonthly {
+  ymd         Int
+  prefix      String    @db.VarChar(20)
+  mode        Int       @db.SmallInt
+  f1          Int?
+  f2          Int?
+  f3          Int?
+  f4          Int?
+  f5          Int?
+  f6          Int?
+  f7          Int?
+  f8          Int?
+  f9          Int?
+  f10         String?   @db.VarChar(60)
+  f11         String?   @db.VarChar(60)
+  f12         String?   @db.VarChar(60)
+  f13         String?   @db.VarChar(60)
+  f14         String?   @db.VarChar(60)
+  f15         Float?    @db.Float
+  f16         Float?    @db.Float
+  f17         Float?    @db.Float
+  f18         Float?    @db.Float
+  f19         Float?    @db.Float
+  f20         Float?    @db.Float
+  ext         String?   @db.Text
+  hash        String?   @db.VarChar(60)
+  create_date DateTime? @db.DateTime(0)
+  update_date DateTime? @db.DateTime(0)
+
+  @@id([ymd, prefix, mode])
+}
+
+model righttb {
+  RightId      Int    @id @default(autoincrement())
+  UserId       Int
+  FunctionCode String @default("") @db.VarChar(10)
+
+  @@unique([UserId, FunctionCode], map: "UserId")
+}
+
+model serverlogtb {
+  ServerLogId Int      @id @default(autoincrement())
+  Status      String   @db.VarChar(50)
+  RecordDate  DateTime @db.Date
+  RecordTime  DateTime @db.Time(0)
+  Period      Int      @default(0)
+  Note        String?  @db.VarChar(255)
+}
+
+model servicedetailtb {
+  ServiceDetailId Int      @id @default(autoincrement())
+  UserId          Int
+  ServiceId       Int
+  ServiceDate     DateTime @db.Date
+  ServiceTime     DateTime @db.Time(0)
+  ServiceQuantity Int
+  ServiceAmount   Decimal  @db.Decimal(9, 0)
+  ServicePaid     Boolean  @default(false)
+  Accept          Boolean  @default(false)
+  VoucherId       Int?     @default(0)
+  StaffId         Int      @default(2)
+  PaymentWaitId   Int      @default(0)
+  iCafeHash       String?  @db.VarChar(32)
+  iCafeUsr        String?  @db.VarChar(32)
+
+  @@index([ServicePaid], map: "ServicePaid")
+}
+
+model servicegiftsbag {
+  recId        BigInt    @default(autoincrement())
+  recUuid      String    @id @db.VarChar(50)
+  userId       String?   @db.VarChar(50)
+  userName     String?   @db.VarChar(150)
+  createDate   DateTime? @db.DateTime(0)
+  expDate      DateTime? @db.DateTime(0)
+  sourceType   Int?      @db.SmallInt
+  serviceId    Int?
+  serviceName  String?   @db.VarChar(250)
+  servicePrice Int?
+  serviceImg   String?   @db.VarChar(250)
+  status       Int?      @db.SmallInt
+  requestDate  DateTime? @db.DateTime(0)
+  acceptDate   DateTime? @db.DateTime(0)
+  sign         String?   @db.VarChar(250)
+  staffId      Int?
+  staffName    String?   @db.VarChar(60)
+  transId      String?   @db.VarChar(250)
+  serialId     String?   @db.VarChar(150)
+  ymd          Int?
+  totalDay     Int?
+  groupId      Int?      @default(0) @db.SmallInt
+
+  @@index([recId], map: "recId")
+}
+
+model servicegrouptb {
+  ID               Int    @id @default(autoincrement()) @db.UnsignedInt
+  ServiceGroupName String @unique(map: "ServiceGroupName") @default("") @db.VarChar(50)
+  IsOrder          Int    @default(0) @db.UnsignedTinyInt
+  Active           Int?   @default(1) @db.TinyInt
+  TypeID           Int    @default(0) @db.SmallInt
+}
+
+model serviceinfologtb {
+  logId      Int       @default(autoincrement())
+  serviceId  Int?
+  prefix     String    @unique(map: "unix_prefix") @db.VarChar(20)
+  info       String?   @db.Text
+  status     Int?      @default(1) @db.SmallInt
+  createDate DateTime? @db.DateTime(0)
+  mode       Int?      @default(0) @db.SmallInt
+  hash       String?   @db.VarChar(32)
+
+  @@index([logId], map: "logId")
+}
+
+model serviceinfotb {
+  serviceId  Int       @default(autoincrement())
+  prefix     String    @unique(map: "unix_prefix") @db.VarChar(20)
+  info       String?   @db.Text
+  status     Int?      @default(1) @db.SmallInt
+  createDate DateTime? @db.DateTime(0)
+  mode       Int?      @default(0) @db.SmallInt
+  hash       String?   @db.VarChar(32)
+
+  @@index([serviceId], map: "serviceId")
+}
+
+model servicetb {
+  ServiceId            Int       @id @default(autoincrement())
+  ServiceName          String    @db.VarChar(50)
+  ServicePrice         Decimal   @db.Decimal(9, 0)
+  Unit                 String    @default("") @db.VarChar(50)
+  Active               Boolean   @default(true)
+  InventoryManagement  Boolean   @default(false)
+  Inventory            Int       @default(0) @db.UnsignedInt
+  WarningInventory     Int       @default(0)
+  ServiceGroupID       Int       @default(1) @db.UnsignedInt
+  NumInventoryExpected Int       @default(0)
+  UnitID               Int       @default(0) @db.UnsignedInt
+  SuggestID            Int       @default(0) @db.UnsignedInt
+  ServiceImg           String?   @db.VarChar(60)
+  ServiceDate          DateTime? @db.DateTime(0)
+}
+
+model serviceunittb {
+  ID       Int     @id @default(autoincrement()) @db.UnsignedInt
+  Unit     String  @default("") @db.VarChar(50)
+  IsActive Boolean @default(false)
+}
+
+model servicevisit {
+  uid         String    @db.VarChar(50)
+  vstotal     Int?      @db.SmallInt
+  vsdetail    String?   @db.VarChar(1000)
+  ym          Int
+  last_update DateTime? @db.DateTime(0)
+  sign        String?   @db.VarChar(32)
+  ssid        String?   @db.VarChar(32)
+  reset       Int?      @default(0) @db.SmallInt
+
+  @@id([uid, ym])
+}
+
+model settingtb {
+  SettingId Int     @id
+  Value     Int
+  Data      String  @db.Text
+  Active    Boolean
+}
+
+model softwaretb {
+  ID      Int    @id @default(autoincrement())
+  UserId  Int    @default(0)
+  Name    String @default("") @db.VarChar(100)
+  Version String @default("") @db.VarChar(50)
+  MAC     String @default("") @db.VarChar(50)
+  Active  Int    @default(0) @db.TinyInt
+}
+
+model specappdetailtb {
+  ID              Int      @id @default(autoincrement())
+  MachineName     String   @default("") @db.VarChar(64)
+  AppName         String   @default("") @db.VarChar(64)
+  Shortcut        String   @default("") @db.VarChar(64)
+  InstallName     String   @default("") @db.VarChar(64)
+  InstallVersion  String   @default("") @db.VarChar(64)
+  InstallLocation String   @default("") @db.VarChar(255)
+  LastUpdateDate  DateTime @db.Date
+  Sent            Boolean  @default(false)
+  AppRun          Boolean  @default(false)
+  SubRun          Boolean  @default(false)
+  SubRun2         Boolean  @default(false)
+}
+
+model standardservicetb {
+  StandardServiceId      Int    @id @default(autoincrement()) @db.UnsignedInt
+  StandardServiceName    String @default("") @db.VarChar(50)
+  StandardServiceGroupID Int    @default(0) @db.UnsignedInt
+  Active                 Int    @default(0) @db.UnsignedTinyInt
+}
+
+model stocktakingtb {
+  ID                   Int      @id @default(autoincrement()) @db.UnsignedInt
+  CreateDate           DateTime @default(dbgenerated("'0000-00-00'")) @db.Date
+  CreateTime           DateTime @default(dbgenerated("'00:00:00'")) @db.Time(0)
+  StaffID              Int      @default(0) @db.UnsignedInt
+  NumInventoryExpected Int      @default(0)
+  NumInventoryReal     Int      @default(0)
+  NumAdjust            Int      @default(0)
+  NumPreAdjust         Int      @default(0)
+  Note                 String?  @db.VarChar(250)
+  ServiceID            Int      @default(0) @db.UnsignedInt
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model supportdetail {
+  id          Int       @default(autoincrement())
+  fid         Int?
+  ymd         Int?
+  pcn         String?   @db.VarChar(50)
+  uid         Int?
+  infoId      Int?
+  infoMsg     String?   @db.VarChar(250)
+  infoHash    String?   @db.VarChar(30)
+  createDate  DateTime? @db.DateTime(0)
+  unix        String?   @db.VarChar(20)
+  confirmDate DateTime? @db.DateTime(0)
+  unixval     String?   @db.VarChar(50)
+  staffId     Int?      @default(0)
+
+  @@index([id], map: "id")
+  @@index([unixval], map: "unixval")
+  @@ignore
+}
+
+model supports {
+  supportId    Int       @default(autoincrement())
+  supportTitle String    @id @db.VarChar(255)
+  supportImage String?   @db.VarChar(150)
+  suportCode   Int?      @default(0)
+  supportHash  String?   @db.VarChar(255)
+  status       Int?      @db.SmallInt
+  order        Int?      @default(0) @db.SmallInt
+  supportCat   String?   @default("") @db.VarChar(150)
+  totalClick   Int?      @default(0) @db.SmallInt
+  ssId         String?   @db.VarChar(50)
+  createDate   DateTime? @db.DateTime(0)
+  modifyDate   DateTime? @db.DateTime(0)
+
+  @@index([supportId], map: "supportId")
+}
+
+model systemfunctiontb {
+  ResourceID Int @id @default(0)
+  Status     Int @default(0) @db.TinyInt
+}
+
+model systemlogtb {
+  SystemLogId      Int       @id @default(autoincrement())
+  UserId           Int?
+  MachineName      String    @db.VarChar(50)
+  IPAddress        String    @db.VarChar(50)
+  EnterDate        DateTime  @db.Date
+  EnterTime        DateTime  @db.Time(0)
+  EndDate          DateTime? @db.Date
+  EndTime          DateTime? @db.Time(0)
+  Status           Int       @db.TinyInt
+  Note             String    @db.VarChar(255)
+  TimeUsed         Int
+  MoneyUsed        Int       @default(0)
+  PriceAppRentID   Int       @default(0) @db.UnsignedInt
+  AppRentMoneyUsed Int       @default(0)
+}
+
+model trackappdetailtb {
+  TrackAppDetailId Int      @id @default(autoincrement())
+  AppName          String   @db.VarChar(50)
+  UserName         String   @db.VarChar(50)
+  TrackingDate     DateTime @db.Date
+  TrackingTime     DateTime @db.Time(0)
+  TimeTotal        Int
+  AppSession       Boolean  @default(true)
+  Sent             Boolean  @default(false)
+  Machine          String   @default("") @db.VarChar(50)
+  SessionId        Int      @default(0)
+  ETT              String   @default("") @db.VarChar(100)
+}
+
+model trackapptb {
+  AppName      String @unique(map: "AppName") @db.VarChar(100)
+  TrackingType Int    @db.TinyInt
+}
+
+model trackguitb {
+  ID          Int      @id @default(autoincrement())
+  RecordDate  DateTime @db.Date
+  FromTime    DateTime @db.Time(0)
+  ToTime      DateTime @db.Time(0)
+  DialogID    Int
+  PrePath     String?  @db.VarChar(50)
+  ControlID   Int
+  Type        Int
+  Param       String?  @db.VarChar(50)
+  ActionCount Int
+}
+
+model transferdetailtb {
+  TransferDetailId Int      @id @default(autoincrement())
+  VoucherId        Int
+  FromUserId       Int
+  ToUserId         Int
+  TransferDate     DateTime @db.Date
+  TransferTime     DateTime @db.Time(0)
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model usagetimedetailtb {
+  UsageTimeId     Int
+  UsageTimeDetail Int
+  DefineDate      Int
+  FromTime        DateTime @db.Time(0)
+  ToTime          DateTime @db.Time(0)
+
+  @@ignore
+}
+
+model usagetimetb {
+  UsageTimeId   Int     @id @default(autoincrement())
+  UsageTimeName String? @db.VarChar(30)
+  FromAge       Int?
+  ToAge         Int?
+  UserType      Int     @default(0) @db.SmallInt
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model usertb {
+  UserId           Int       @id @default(autoincrement())
+  FirstName        String?   @db.VarChar(100)
+  LastName         String?   @db.VarChar(50)
+  MiddleName       String?   @db.VarChar(50)
+  UserName         String    @db.VarChar(100)
+  Password         String    @db.VarChar(130)
+  ID               String    @db.VarChar(20)
+  Address          String    @db.VarChar(255)
+  Phone            String    @db.VarChar(30)
+  Email            String    @db.VarChar(100)
+  City             String    @db.VarChar(50)
+  State            String    @db.VarChar(50)
+  Zipcode          String    @db.VarChar(10)
+  Debit            Decimal   @db.Decimal(9, 0)
+  CreditLimit      Decimal   @db.Decimal(9, 0)
+  Active           Boolean
+  RecordDate       DateTime  @db.Date
+  ExpiryDate       DateTime? @db.Date
+  UserType         Int       @db.SmallInt
+  Memo             String    @db.Text
+  Birthdate        DateTime? @db.Date
+  SSN1             String    @db.VarChar(3)
+  SSN2             String    @db.VarChar(2)
+  SSN3             String    @db.VarChar(4)
+  TimePaid         Int
+  TimeUsed         Int
+  MoneyPaid        Int       @default(0)
+  MoneyUsed        Int       @default(0)
+  RemainTime       Int
+  FreeTime         Int
+  TimeTransfer     Int
+  RemainMoney      Int       @default(0)
+  FreeMoney        Int       @default(0)
+  MoneyTransfer    Int       @default(0)
+  UsageTimeId      Int
+  PromotionTime    Int
+  PromotionMoney   Int       @default(0)
+  MachineGroupId   Int       @default(0)
+  MAC              String    @default("") @db.VarChar(50)
+  changepcdetailId Int       @default(0)
+  MoneyUsedMin     Int       @default(0)
+  CType            Int?      @default(0) @db.TinyInt
+  Status           Int?      @default(1) @db.TinyInt
+  LastLoginDate    DateTime  @default(dbgenerated("'0000-00-00'")) @db.Date
+  PriceAppRentID   Int       @default(0) @db.UnsignedInt
+  EIType           Int?      @default(0) @db.TinyInt
+  pc_rptInfo       String?   @db.VarChar(255)
+
+  @@index([UserName], map: "Username")
+}
+
+model versiontb {
+  ComputerName String   @id @db.VarChar(20)
+  Version      String   @db.VarChar(12)
+  Type         Int      @db.TinyInt
+  ReleaseDate  DateTime @default(dbgenerated("'0000-00-00'")) @db.Date
+  LastUpdate   DateTime @default(dbgenerated("'0000-00-00'")) @db.Date
+  DPStatus     Int?     @default(0) @db.TinyInt
+  DPType       Int?     @default(0) @db.TinyInt
+  DPVersion    String   @default("") @db.VarChar(12)
+}
+
+model wallettb {
+  id     BigInt  @id @default(autoincrement())
+  main   BigInt?
+  sub    BigInt?
+  sub1   BigInt?
+  sub2   BigInt?
+  userid BigInt?
+  status Int?
+  ts     BigInt?
+  wsec   BigInt?
+  ssec   String? @db.VarChar(255)
+}
+
+model webhistorytb {
+  URLId       Int      @id @default(autoincrement())
+  URL         String   @db.VarChar(2048)
+  RecordDate  DateTime @db.DateTime(0)
+  UserId      Int
+  Machine     String   @db.VarChar(50)
+  Active      Int      @default(1) @db.TinyInt
+  Session     Int      @default(0) @db.TinyInt
+  AnonymousId Int      @default(0)
+  BrowserType Boolean  @default(false)
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model webhistorytb2 {
+  Domain     String @db.VarChar(255)
+  Weight     Int
+  RecordDate String @db.VarChar(16)
+
+  @@ignore
+}
