@@ -180,6 +180,7 @@ export async function GET() {
 
     return NextResponse.json(results);
   } catch (error) {
-    return new NextResponse("Internal Error", { status: 500 });
+    console.log('error', error)
+    return new NextResponse(error, { status: 500 });
   }
 }
