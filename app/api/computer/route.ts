@@ -35,22 +35,23 @@ export async function GET() {
              INNER JOIN (
         SELECT MachineName, MAX(EnterDate) AS MaxEnterDate
         FROM systemlogtb
-        WHERE MachineName NOT LIKE 'MAY-%'
+        WHERE MachineName NOT LIKE 'MAY-%' AND MachineName != 'ADMIN'
         GROUP BY MachineName
       ) latest_date
-                        ON s.MachineName = latest_date.MachineName AND s.EnterDate = latest_date.MaxEnterDate
+                        ON s.MachineName = latest_date.MachineName
+                          AND s.EnterDate = latest_date.MaxEnterDate
              INNER JOIN (
         SELECT MachineName, EnterDate, MAX(EnterTime) AS MaxEnterTime
         FROM systemlogtb
-        WHERE MachineName NOT LIKE 'MAY-%'
+        WHERE MachineName NOT LIKE 'MAY-%' AND MachineName != 'ADMIN'
         GROUP BY MachineName, EnterDate
       ) latest_time
                         ON s.MachineName = latest_time.MachineName
                           AND s.EnterDate = latest_time.EnterDate
                           AND s.EnterTime = latest_time.MaxEnterTime
-      WHERE s.MachineName NOT LIKE 'MAY-%'
-      ORDER BY s.EnterDate ASC, s.EnterTime ASC;
-        `;
+      WHERE s.MachineName NOT LIKE 'MAY-%' AND s.MachineName != 'ADMIN'
+      ORDER BY MachineName ASC, s.EnterDate ASC, s.EnterTime ASC;
+    `;
 
     const computerStatus = await fnetDB.$queryRaw<any[]>(query);
 
