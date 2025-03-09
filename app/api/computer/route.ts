@@ -26,6 +26,9 @@ export async function GET() {
     const computers = await db.computer.findMany({
       where: {
         branch: branchFromCookie,
+        name: {
+          not: 'ADMIN'
+        },
       },
     });
 
@@ -35,7 +38,7 @@ export async function GET() {
              INNER JOIN (
         SELECT MachineName, MAX(EnterDate) AS MaxEnterDate
         FROM systemlogtb
-        WHERE MachineName NOT LIKE 'MAY-%' AND MachineName != 'ADMIN'
+        WHERE MachineName NOT LIKE 'MAY-%'
         GROUP BY MachineName
       ) latest_date
                         ON s.MachineName = latest_date.MachineName
@@ -43,13 +46,13 @@ export async function GET() {
              INNER JOIN (
         SELECT MachineName, EnterDate, MAX(EnterTime) AS MaxEnterTime
         FROM systemlogtb
-        WHERE MachineName NOT LIKE 'MAY-%' AND MachineName != 'ADMIN'
+        WHERE MachineName NOT LIKE 'MAY-%'
         GROUP BY MachineName, EnterDate
       ) latest_time
                         ON s.MachineName = latest_time.MachineName
                           AND s.EnterDate = latest_time.EnterDate
                           AND s.EnterTime = latest_time.MaxEnterTime
-      WHERE s.MachineName NOT LIKE 'MAY-%' AND s.MachineName != 'ADMIN'
+      WHERE s.MachineName NOT LIKE 'MAY-%'
       ORDER BY MachineName ASC, s.EnterDate ASC, s.EnterTime ASC;
     `;
 
