@@ -181,6 +181,6 @@ export async function GET() {
     return NextResponse.json(results);
   } catch (error) {
     console.log('error', error)
-    return new NextResponse(error, { status: 500 });
+    return new NextResponse("Internal Error", { status: 500 });
   }
 }
