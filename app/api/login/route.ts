@@ -53,6 +53,7 @@ export async function POST(req: Request, res: Response): Promise<any> {
       });
 
       if (currentUser) {
+        // @ts-ignore
         const token = await signJWT({ userId: currentUser?.id });
         const response = NextResponse.json(currentUser);
 
