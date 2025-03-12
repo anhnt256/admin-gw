@@ -6,7 +6,7 @@ import { verifyJWT } from "@/lib/jwt";
 export function middleware(request: NextRequest) {
   const response = NextResponse.next();
 
-  const publicPaths = ["/", "/api/login", "/thank-you"];
+  const publicPaths = ["/", "/api/login", "/api/check-branch"];
 
   if (publicPaths.includes(request.nextUrl.pathname)) {
     return response;
