@@ -18,14 +18,15 @@ export async function POST(req: Request, res: Response): Promise<any> {
   const branchFromCookie = cookieStore.get("branch")?.value;
 
   try {
-    const { userName, password } = JSON.parse(body);
+    const body = await req.text();
 
+    const { userName, password } = JSON.parse(body);
 
       const currentUser = await db.$queryRaw`
           SELECT * FROM Staff
           WHERE userName = ${userName}
           AND password = SHA2(${password}, 256)
-          AND branch = ${branchFromCookie}
+          AND branch = ${result?.branch}
           LIMIT 1
         `;
 
@@ -49,7 +50,7 @@ export async function POST(req: Request, res: Response): Promise<any> {
         });
 
         return response;
-      }
+    }
     return NextResponse.json("Login Fail", { status: 401 });
   } catch (error) {
     const errorMessage =
