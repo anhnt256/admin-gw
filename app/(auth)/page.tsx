@@ -16,6 +16,7 @@ import { BRANCH } from "@/constants/enum.constant";
 import { Spin } from "antd";
 import { isElectron } from "@/lib/electron";
 import { getMacAddresses } from "@/lib/mac";
+import { useQuery } from "@tanstack/react-query";
 
 const expirationDuration = 1;
 const expirationDate = dayjs().add(expirationDuration, "day").format();
@@ -30,6 +31,12 @@ const Login = () => {
 
   const [macAddresses, setMacAddresses] = useState<string>();
   const [isDesktopApp, setIsDesktopApp] = useState(false);
+
+  const { data: machineData } = useQuery({
+    queryKey: ["check-branch"],
+    enabled: !!macAddresses,
+    queryFn: () => fetch("/api/check-branch").then((res) => res.json()),
+  });
 
   useEffect(() => {
     let mounted = true;
@@ -68,11 +75,17 @@ const Login = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (machineData) {
+      onLogin();
+    }
+  }, [machineData]);
+
   const onLogin = async () => {
     if (pageLoading) {
       return;
     }
-
+    if (machineData) {
     setPageLoading(true);
     const result = await loginMutation.mutateAsync({ userName, password });
     setPageLoading(false);
@@ -83,6 +96,7 @@ const Login = () => {
       router.push("/dashboard");
     } else if (statusCode === 500 || statusCode === 499) {
       toast.error(message);
+    }
     }
   };
 

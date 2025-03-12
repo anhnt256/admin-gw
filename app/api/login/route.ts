@@ -1,10 +1,7 @@
 import { NextResponse } from "next/server";
-import { getCookie } from "cookies-next";
-import { cookies, headers } from "next/headers";
-import { db, getFnetDB, getFnetPrisma } from "@/lib/db";
+import { cookies } from "next/headers";
+import { db } from "@/lib/db";
 import { signJWT } from "@/lib/jwt";
-import isEmpty from "lodash/isEmpty";
-import { BRANCH } from "@/constants/enum.constant";
 import dayjs from "dayjs";
 import crypto from "crypto";
 
@@ -16,35 +13,19 @@ function hashPassword(password: string) {
 }
 
 export async function POST(req: Request, res: Response): Promise<any> {
-  try {
-    const macAddress = getCookie("macAddress", { req, res });
-    // const macAddress = "A4-0C-66-0B-E3-AD";
-    const body = await req.text();
 
+  const cookieStore = await cookies();
+  const branchFromCookie = cookieStore.get("branch")?.value;
+
+  try {
     const { userName, password } = JSON.parse(body);
 
-    if (macAddress) {
-      const result = await db.computer.findFirst({
-        where: {
-          localIp: macAddress.replaceAll(":", "-").toUpperCase(),
-        },
-        select: {
-          name: true,
-          branch: true,
-        },
-      });
-
-      const cookieStore = cookies();
-      // @ts-ignore
-      cookieStore.set("branch", result?.branch, {
-        expires: new Date(expirationDate),
-      });
 
       const currentUser = await db.$queryRaw`
           SELECT * FROM Staff
           WHERE userName = ${userName}
           AND password = SHA2(${password}, 256)
-          AND branch = ${result?.branch}
+          AND branch = ${branchFromCookie}
           LIMIT 1
         `;
 
@@ -69,7 +50,6 @@ export async function POST(req: Request, res: Response): Promise<any> {
 
         return response;
       }
-    }
     return NextResponse.json("Login Fail", { status: 401 });
   } catch (error) {
     const errorMessage =
