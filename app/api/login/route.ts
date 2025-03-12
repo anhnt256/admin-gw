@@ -26,7 +26,7 @@ export async function POST(req: Request, res: Response): Promise<any> {
           SELECT * FROM Staff
           WHERE userName = ${userName}
           AND password = SHA2(${password}, 256)
-          AND branch = ${result?.branch}
+          AND branch = ${branchFromCookie}
           LIMIT 1
         `;
 
