@@ -165,7 +165,7 @@ export async function GET() {
 
         const userRound = await db.$queryRaw<[{ count: bigint }]>(queryRound);
 
-        totalRound = Number(userRound[0].count);
+        totalRound = round - Number(userRound[0].count);
       }
 
       results.push({
