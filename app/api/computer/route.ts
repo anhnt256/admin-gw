@@ -87,8 +87,8 @@ export async function GET() {
              WHERE t1.UserId = ${UserId.toString()}
                AND t1.status = 3
                AND DATE(STR_TO_DATE(CONCAT(t1.EnterDate, ' ', t1.EnterTime), '%Y-%m-%d %H:%i:%s')) < CURDATE()
-      ORDER BY STR_TO_DATE(CONCAT(t1.EnterDate, ' ', t1.EnterTime), '%Y-%m-%d %H:%i:%s') DESC
-        LIMIT 1
+            ORDER BY STR_TO_DATE(CONCAT(t1.EnterDate, ' ', t1.EnterTime), '%Y-%m-%d %H:%i:%s') DESC
+            LIMIT 1
         ) AS t2`;
         const result = await fnetDB.$queryRaw<any[]>(query);
 
@@ -139,8 +139,8 @@ export async function GET() {
       WHERE PaymentType = 4
         AND UserId = ${parseInt(UserId, 10)}
         AND Note = N'Thời gian phí'
-        AND (ServeDate + INTERVAL ServeTime HOUR_SECOND) >= DATE(NOW()) - INTERVAL 30 DAY
-        AND (ServeDate + INTERVAL ServeTime HOUR_SECOND) <= NOW()
+        AND (ServeDate + INTERVAL ServeTime HOUR_SECOND) >= DATE_SUB(DATE(NOW()), INTERVAL (WEEKDAY(NOW()) + 6) % 7 DAY)
+        AND (ServeDate + INTERVAL ServeTime HOUR_SECOND) <= NOW();
     `;
 
         const resultData =
@@ -159,7 +159,7 @@ export async function GET() {
                       SELECT COUNT(*) as count
                       FROM GameResult gr
                       WHERE gr.userId = ${parseInt(UserId, 10)}
-                      AND CreatedAt >= DATE(NOW()) - INTERVAL 30 DAY
+                      AND CreatedAt >= DATE_SUB(DATE(NOW()), INTERVAL (WEEKDAY(NOW()) + 6) % 7 DAY)
                       AND CreatedAt <= NOW();
                     `;
 

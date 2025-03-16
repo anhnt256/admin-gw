@@ -86,11 +86,10 @@ const Dashboard = () => {
                           </div>
                         )}
 
-                      {!isEmpty(userName) && userId !== 0 && (
-                        <div className="text-[9px] truncate text-orange-400 font-bold">
-                          {userId}
-                        </div>
-                      )}
+                      <div className="text-[9px] truncate text-orange-400 font-bold">
+                        {userId}
+                      </div>
+
                       {!isEmpty(userName) && userId !== 0 && (
                         <div className="text-[9px] truncate text-purple-800 font-bold">
                           {`Điểm danh: ${canClaim.toLocaleString()}`}
